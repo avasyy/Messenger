@@ -13,15 +13,15 @@ Messenger consists from Client and Server:
 We can compile it only on OC Linux and similar OC.
 Open terminal and follow one of next commands for downloading:
 
-    1. `clone https://github.com/YuriySavchenko/Messenger.git`
+    1. clone https://github.com/YuriySavchenko/Messenger.git
 
-    2. `clone https://github.com/YuriySavchenko/Messenger.git`
+    2. clone https://github.com/YuriySavchenko/Messenger.git
   
 After it we can compile project. For this you need copy next commands:
 
-    `cd Messenger/`
+    cd Messenger/
   
-    `cmake ./ && make `
+    cmake ./ && make
   
 In case if all of this commands didn't show errors you will have got two executable files:
   * _Server_ - for running your Server.
