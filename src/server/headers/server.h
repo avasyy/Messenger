@@ -27,17 +27,11 @@ class Server : public TCP {
         struct sockaddr_in client_addr;
         int server_sock;
         int client_sock;
-        int sender_sock;
         int port;
         int count;
         std::string ip;
         std::string buffer;
         std::vector<User> users;
-
-    /* enum for choosing operation on the server */
-
-    public:
-        enum Operation {message, clients, exit};
 
     /* explicit and particular constructors */
 
