@@ -53,10 +53,28 @@ void Server::Connect() {
 
 void Server::Send(std::string message) {
     std::cout << "[+] Sending message..." << std::endl;
-    std::string msg = this->buffer;
+
+    std::string msg = "";
+    std::string receiver = "";
+
+    int index = 0;
+
+    // cutting name of receiver
+
+    for (index; this->buffer[index] != '|'; index++)
+        receiver += this->buffer[index];
+
+    index += 1;
+
+    // cutting text of message
+
+    for (index; this->buffer[index] != '\0'; index++)
+        msg += this->buffer[index];
+
+    // looking for receiver in list of Users and send to him message
 
     for (int i=0; i < users.size(); i++) {
-        if (users[i].data != sender_sock)
+        if (users[i].name == receiver)
             send(users[i].data, msg.c_str(), msg.length(), 0);
     }
 
@@ -66,7 +84,6 @@ void Server::Send(std::string message) {
 /* procedure for receiving messages */
 
 void Server::Receive(int socket) {
-    this->sender_sock = socket;
     char buff[1024] = {};
 
     memset(&buff, '\0', sizeof(buff));
@@ -77,6 +94,8 @@ void Server::Receive(int socket) {
             std::string sender;
             std::string ip;
 
+            // looking for name of sender
+
             for (int i=0; i < users.size(); i++) {
                 if (users[i].data == socket) {
                     sender = users[i].name;
@@ -84,10 +103,10 @@ void Server::Receive(int socket) {
                 }
             }
 
+            this->buffer = buff;
+
             std::cout << "Message from client: " << std::endl;
             std::cout << "NICKNAME: " << sender << " IP: " << ip << " MESSAGE: " << buff << std::endl;
-
-            this->buffer = buff;
     }
 
     else if (receive == -1) {
@@ -95,13 +114,12 @@ void Server::Receive(int socket) {
         exit(EXIT_FAILURE);
     }
 }
+
 /* procedure for closing both sockets */
 
 void Server::Close() {
     std::cout << "Stop of listening!" << std::endl;
     std::cout << "[-] Stop of working server!" << std::endl;
-
-    Send("Connection was interrupted!");
 
     close(this->client_sock);
     close(this->server_sock);
@@ -110,25 +128,31 @@ void Server::Close() {
 /* function for receiving communication on the socket */
 
 void Server::Accept() {
+    // accepting connection of User
+
     int length_client_addr = sizeof(client_addr);
     client_sock = accept(server_sock, (struct sockaddr*) &client_addr, (socklen_t *) &length_client_addr);
     getpeername(client_sock, (struct sockaddr*) &client_addr, (socklen_t *) &length_client_addr);
 
-    std::cout <<
-    "Client with IP: " <<
-    inet_ntoa(client_addr.sin_addr) <<
-    ":" << ntohs(client_addr.sin_port) <<
-    " was connected." <<
-    std::endl;
+    // print info about connected user
+
+    std::cout << "Client with IP: ";
+    std::cout << inet_ntoa(client_addr.sin_addr);
+    std::cout << ":" << ntohs(client_addr.sin_port);
+    std::cout << " was connected.";
+    std::cout << std::endl;
 
     char buff[1024] = {};
-
     memset(&buff, '\0', sizeof(buff));
+
+    // receiving nickname of User
 
     int recv_nick = recv(client_sock, buff, 1024, 0);
 
     if (recv_nick != 0) {
         this->buffer = buff;
+
+        // adding connected User to vector of Users
 
         if (this->buffer.length() > 0)
             users.push_back(User{count, client_sock, "127.0.0.1", buffer});
@@ -143,12 +167,6 @@ void Server::Accept() {
         std::cout << "[-] Receiving Error Nickname!";
         exit(EXIT_FAILURE);
     }
-
-    std::cout << "NICKNAME: " <<
-    users[users.size()-1].name <<
-    " IP: " << users[users.size()-1].ip <<
-    " SOCKET: " << users[users.size()-1].data <<
-    std::endl;
 }
 
 /* function for getting value from { client_sock } */
