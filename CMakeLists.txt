@@ -3,8 +3,19 @@ project(ClientServer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Server src/server/mainServer.cpp src/server/headers/server.h src/server/cpp/server.cpp)
-add_executable(Client src/client/mainClient.cpp src/client/headers/client.h src/client/cpp/client.cpp src/tcp/TCP.h src/structures/User.h)
+add_executable(Server
+        src/server/mainServer.cpp
+        src/server/headers/server.h
+        src/server/cpp/server.cpp
+        src/structures/User.h
+        src/tcp/TCP.h)
+
+add_executable(Client
+        src/client/mainClient.cpp
+        src/client/headers/client.h
+        src/client/cpp/client.cpp
+        src/tcp/TCP.h
+        src/structures/User.h)
 
 find_package(Threads REQUIRED)
 if(THREADS_HAVE_PTHREAD_ARG)
