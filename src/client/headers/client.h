@@ -23,6 +23,7 @@ class Client : public TCP {
         int client_sock;
         int port;
         std::string name;
+        std::string collocutor;
         std::string ip;
 
     /* prototypes of explicit and particular constructors */
