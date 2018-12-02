@@ -15,8 +15,10 @@ Client::Client(std::string address, int port) {
     this->ip = address;
     this->port = port;
 
-    std::cout << "Please write your name: ";
+    std::cout << "[!] Write your nickname: ";
     std::getline(std::cin, this->name);
+    std::cout << "[!] Choose your friend: ";
+    std::getline(std::cin, this->collocutor);
 }
 
 /* procedure for connection to server */
@@ -44,15 +46,24 @@ void Client::Connect() {
     getsockname(client_sock, (struct sockaddr *) &client_addr, (socklen_t *) &size_client_addr);
     getpeername(client_sock, (struct sockaddr *) &server_addr, (socklen_t *) &size_server_addr);
 
+    // sending nickname of User
+
     send(client_sock, this->name.c_str(), this->name.length(), 0);
 
-    std::cout << "Connected to server with IP: " << inet_ntoa(server_addr.sin_addr) <<  ":" << ntohs(server_addr.sin_port) << std::endl;
+    // print info about server
+
+    std::cout << "Connected to server with IP: ";
+    std::cout << inet_ntoa(server_addr.sin_addr);
+    std::cout << ":" << ntohs(server_addr.sin_port);
+    std::cout << std::endl;
 }
 
 /* procedure for sending message */
 
 void Client::Send(std::string message) {
-    int __send__ = send(client_sock, message.c_str(), message.length(), 0);
+    std::string msg = this->collocutor + "|" + message;
+
+    int __send__ = send(client_sock, msg.c_str(), msg.length(), 0);
 
     if (__send__ < 0) {
         throw "Error of sending!";
@@ -66,6 +77,7 @@ void Client::Send(std::string message) {
 void Client::Receive(int socket) {
     char buff[1024];
     memset(&buff, '\0', sizeof(buff));
+
     int __receive__ = recv(client_sock, buff, 1024, 0);
 
     if (__receive__ < 0) {
@@ -74,7 +86,13 @@ void Client::Receive(int socket) {
         return;
     }
 
-    std::cout << buff << std::endl;
+    std::string msg = "";
+
+    msg += this->collocutor;
+    msg += "> ";
+    msg += buff;
+
+    std::cout << msg << std::endl;
 }
 
 /* procedure for close client socket */
