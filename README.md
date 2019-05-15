@@ -1,6 +1,7 @@
 # Messenger - Simple Console Messenger
 
 [![version](https://badge.fury.io/gh/YuriySavchenko%2FMessenger.svg)](https://github.com/YuriySavchenko/Messenger/releases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Console Messenger
 
